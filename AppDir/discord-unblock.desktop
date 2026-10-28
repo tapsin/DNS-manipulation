@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Discord Unblock
+Comment=Discord'un DPI engelini zapret/nfqws ile aşar
+Exec=AppRun
+Icon=discord-unblock
+Terminal=false
+Categories=Network;

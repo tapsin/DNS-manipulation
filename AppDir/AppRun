@@ -1,0 +1,4 @@
+#!/bin/sh
+# AppImage giriş noktası. Root yetkisi için pkexec (grafik sudo penceresi) kullanır.
+HERE="$(dirname "$(readlink -f "$0")")"
+exec python3 "$HERE/usr/bin/discord_unblock.py"

@@ -1,0 +1,16 @@
+# build-appimage.sh ve scripts/fetch-nfqws.sh tarafından üretilenler
+build/
+appimagetool
+*.AppImage
+AppDir/usr/bin/nfqws
+AppDir/usr/bin/discord_unblock.py
+
+# Windows'ta indirilen zapret dosyaları (lisans ve boyut nedeniyle repoda tutulmaz)
+winws.exe
+WinDivert.dll
+WinDivert64.sys
+
+# Python önbelleği ve PyInstaller çıktıları
+__pycache__/
+dist/
+*.spec

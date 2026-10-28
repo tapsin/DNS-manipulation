@@ -1,0 +1,35 @@
+#!/bin/sh
+# Root olarak çalışır: iptables kuralını ekler, nfqws'i başlatır,
+# çıkışta (Ctrl+C dahil) kuralı temizler.
+#   kullanım: discord-unblock-run /yol/nfqws
+
+NFQWS="$1"
+QNUM=200
+RULE="-t mangle OUTPUT -p tcp --dport 443 -m connbytes --connbytes-dir=original --connbytes-mode=packets --connbytes 1:6 -m mark ! --mark 0x40000000/0x40000000 -j NFQUEUE --queue-num $QNUM --queue-bypass"
+
+if [ "$(id -u)" -ne 0 ]; then
+    echo "Bu betik root yetkisi gerektirir."
+    exit 1
+fi
+
+if [ ! -x "$NFQWS" ]; then
+    echo "nfqws bulunamadı: $NFQWS"
+    exit 1
+fi
+
+cleanup() {
+    # shellcheck disable=SC2086
+    iptables -D $RULE 2>/dev/null
+    echo "iptables kuralı temizlendi."
+}
+trap cleanup EXIT
+trap 'exit 130' INT TERM
+
+# Önceki yarım kalmış kural varsa önce sil, sonra ekle
+# shellcheck disable=SC2086
+iptables -D $RULE 2>/dev/null
+# shellcheck disable=SC2086
+iptables -A $RULE || { echo "iptables kuralı eklenemedi."; exit 1; }
+
+echo "Discord bypass çalışıyor. Durdurmak için Ctrl+C."
+"$NFQWS" --qnum=$QNUM --dpi-desync=fake --dpi-desync-ttl=6
